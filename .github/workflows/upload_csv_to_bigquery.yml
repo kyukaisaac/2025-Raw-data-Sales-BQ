@@ -2,7 +2,7 @@ name: Upload CSV to BigQuery
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Runs every day at 6 AM UTC
+    - cron: '*/5 * * * *'  # Runs every 5 minutes for testing purposes (adjust as needed)
   workflow_dispatch:
 
 jobs:
@@ -26,6 +26,10 @@ jobs:
         run: |
           curl -L "https://sema.jibuco.com/public/question/4a94fd93-972b-4b39-a7de-a69e8b26583f.csv" -o data.csv
 
+      - name: Delete old BigQuery table (if it exists)
+        run: |
+          bq rm -f jiburawdata:jibu_data.raw_sales_2025  # This deletes the table
+
       - name: Upload CSV to BigQuery
         run: |
-          bq load --replace --source_format=CSV --autodetect jiburawdata:jibu_data.raw_sales_2025 data.csv
+          bq load --source_format=CSV --autodetect jiburawdata:jibu_data.raw_sales_2025 data.csv
