@@ -1,0 +1,27 @@
+name: Upload CSV to BigQuery
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Runs every day at 6 AM UTC
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: jiburawdata
+          credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
+      - name: Download CSV from Metabase link
+        run: |
+          curl -L "https://sema.jibuco.com/public/question/4a94fd93-972b-4b39-a7de-a69e8b26583f.csv" -o data.csv
+
+      - name: Upload CSV to BigQuery
+        run: |
+          bq load --replace --source_format=CSV --autodetect jiburawdata:jibu_data.raw_sales_2025 data.csv
