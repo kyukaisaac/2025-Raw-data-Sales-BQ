@@ -24,7 +24,7 @@ jobs:
 
       - name: Download CSV from Metabase link
         run: |
-          curl -L "https://sema.jibuco.com/public/question/4a94fd93-972b-4b39-a7de-a69e8b26583f.csv" -o data.csv
+          curl -L "https://sema.jibuco.com/public/question/cabced83-1d94-4e16-8e8f-e2b2a38eecaa.csv
 
       - name: Delete old BigQuery table (if it exists)
         run: |
