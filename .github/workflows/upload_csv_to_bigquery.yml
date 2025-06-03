@@ -23,8 +23,9 @@ jobs:
           project_id: jiburawdata
 
       - name: Download CSV from Metabase link
-        run: |
-          curl -L "https://sema.jibuco.com/public/question/cabced83-1d94-4e16-8e8f-e2b2a38eecaa.csv
+  run: |
+    curl -L "https://sema.jibuco.com/public/question/cabced83-1d94-4e16-8e8f-e2b2a38eecaa.csv" -o data.csv
+
 
       - name: Delete old BigQuery table (if it exists)
         run: |
