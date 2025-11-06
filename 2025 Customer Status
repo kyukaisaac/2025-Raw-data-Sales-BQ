@@ -1,0 +1,35 @@
+name: Upload Metabase CSV to BigQuery
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at midnight UTC (adjust if needed)
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}'
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: missed-customers
+
+      - name: Download CSV from Metabase
+        run: |
+          curl -L "https://sema.jibuco.com/public/question/5cfabc2f-0e4d-4f3b-9a15-89b569783ea4.csv" -o data.csv
+
+      - name: Delete old BigQuery table (if it exists)
+        run: |
+          bq rm -f missed-customers:POS.Missed_Customers || echo "Table not found"
+
+      - name: Upload CSV to BigQuery
+        run: |
+          bq load --source_format=CSV --autodetect missed-customers:POS.Missed_Customers data.csv
