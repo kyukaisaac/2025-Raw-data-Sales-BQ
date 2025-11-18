@@ -29,8 +29,15 @@ jobs:
 
       - name: Delete old BigQuery table (if it exists)
         run: |
-          bq rm -f jiburawdata:jibu_data.raw_sales_2025
+          bq rm -f jiburawdata:jibu_data.raw_sales_2025 || true
 
       - name: Upload CSV to BigQuery
         run: |
-          bq load --source_format=CSV --autodetect jiburawdata:jibu_data.raw_sales_2025 data.csv
+          bq load \
+            --source_format=CSV \
+            --autodetect \
+            --quote="\"" \
+            --allow_quoted_newlines \
+            --max_bad_records=10 \
+            jiburawdata:jibu_data.raw_sales_2025 \
+            data.csv
