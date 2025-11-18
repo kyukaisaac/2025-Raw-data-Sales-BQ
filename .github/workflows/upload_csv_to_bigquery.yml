@@ -2,12 +2,13 @@ name: Upload CSV to BigQuery
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs daily at 3:00 AM Uganda time (midnight UTC)
+    - cron: '0 0 * * *' # Runs daily at 3:00 AM Uganda time (midnight UTC)
   workflow_dispatch:
 
 jobs:
   upload:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,15 +29,8 @@ jobs:
 
       - name: Delete old BigQuery table (if it exists)
         run: |
-          bq rm -f jiburawdata:jibu_data.raw_sales_2025
+          bq rm -f jiburawdata:jibu_data.raw_sales_2025 || true
 
       - name: Upload CSV to BigQuery
         run: |
-          bq load \
-            --source_format=CSV \
-            --skip_leading_rows=1 \
-            --max_bad_records=100 \
-            --allow_quoted_newlines \
-            --autodetect \
-            jiburawdata:jibu_data.raw_sales_2025 \
-            data.csv
+          bq load --source_format=CSV --autodetect jiburawdata:jibu_data.raw_sales_2025 data.csv
