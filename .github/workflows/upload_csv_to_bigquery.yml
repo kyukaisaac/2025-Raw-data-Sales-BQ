@@ -36,6 +36,7 @@ jobs:
           bq load \
             --source_format=CSV \
             --autodetect \
+            --skip_leading_rows=1 \
             --quote="\"" \
             --allow_quoted_newlines \
             --max_bad_records=10 \
