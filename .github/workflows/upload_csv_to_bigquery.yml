@@ -32,4 +32,11 @@ jobs:
 
       - name: Upload CSV to BigQuery
         run: |
-          bq load --source_format=CSV --autodetect jiburawdata:jibu_data.raw_sales_2025 data.csv
+          bq load \
+            --source_format=CSV \
+            --skip_leading_rows=1 \
+            --max_bad_records=100 \
+            --allow_quoted_newlines \
+            --autodetect \
+            jiburawdata:jibu_data.raw_sales_2025 \
+            data.csv
